@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { Card, CardHeader, CardTitle } from "./ui/card";
@@ -16,11 +16,16 @@ import {
 } from "./ui/select";
 
 export function Form() {
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [email, setEmail] = useState("");
-	const [selectedFruit, setSelectedFruit] = useState("");
-	const [radioButton, setRadioButton] = useState<string | null>(null);
+	const formData = useRef({
+		firstName: "",
+		lastName: "",
+		email: "",
+		selectedFruit: "",
+		radioButton: "no",
+	});
+
+	const [fruit, setFruit] = useState("");
+	const [radio, setRadio] = useState("no");
 
 	return (
 		<Card className="w-3/4 max-w-7xl bg-blue-950">
@@ -34,13 +39,7 @@ export function Form() {
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
-					console.log("Submit", {
-						firstName,
-						lastName,
-						email,
-						selectedFruit,
-						radioButton,
-					});
+					console.log("Submit", formData.current);
 				}}
 				className="p-6 border-black border-2 w-full"
 			>
@@ -55,7 +54,7 @@ export function Form() {
 								id="firstName"
 								autoComplete="off"
 								placeholder="first name"
-								onChange={(e) => setFirstName(e.target.value)}
+								onChange={(e) => (formData.current.firstName = e.target.value)}
 							/>
 						</Field>
 						<Field>
@@ -67,7 +66,7 @@ export function Form() {
 								id="lastName"
 								autoComplete="off"
 								placeholder="last name"
-								onChange={(e) => setLastName(e.target.value)}
+								onChange={(e) => (formData.current.lastName = e.target.value)}
 							/>
 						</Field>
 						<Field>
@@ -80,21 +79,23 @@ export function Form() {
 								autoComplete="off"
 								type="email"
 								placeholder="example@example.com"
-								onChange={(e) => setEmail(e.target.value)}
+								onChange={(e) => (formData.current.email = e.target.value)}
 							/>
 						</Field>
 					</FieldGroup>
 
 					<FieldGroup className="mt-6">
 						<Select
-							onValueChange={(e) => {
-								setSelectedFruit(e);
+							value={fruit}
+							onValueChange={(value) => {
+								setFruit(value);
+								formData.current.selectedFruit = value;
 							}}
 						>
-							<SelectTrigger className="w-full bg-white">
+							<SelectTrigger className="w-full bg-white text-black focus:ring-0">
 								<SelectValue placeholder="Select a fruit" />
 							</SelectTrigger>
-							<SelectContent>
+							<SelectContent className="bg-white text-black z-50">
 								<SelectGroup>
 									<SelectLabel>Fruits</SelectLabel>
 									<SelectItem value="apple">Apple</SelectItem>
@@ -109,10 +110,11 @@ export function Form() {
 
 					<FieldGroup className="mt-6">
 						<RadioGroup
-							defaultValue="no"
+							value={radio}
 							className="w-fit flex gap-4 items-center"
-							onValueChange={(e) => {
-								setRadioButton(e);
+							onValueChange={(value) => {
+								setRadio(value);
+								formData.current.radioButton = value;
 							}}
 						>
 							<div className="flex items-center gap-2">
