@@ -1,11 +1,9 @@
 import useDebounce from "@/hooks/useDebounce";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "./Button";
-import { Input } from "./Input";
-import { Card, CardHeader, CardTitle } from "./ui/card";
-import { Field, FieldGroup, FieldSet } from "./ui/field";
-import { Label } from "./ui/label";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Card, CardHeader, CardTitle } from "../../components/ui/card";
+import { Field, FieldGroup, FieldSet } from "../../components/ui/field";
+import { Label } from "../../components/ui/label";
+import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 import {
 	Select,
 	SelectContent,
@@ -14,7 +12,9 @@ import {
 	SelectLabel,
 	SelectTrigger,
 	SelectValue,
-} from "./ui/select";
+} from "../../components/ui/select";
+import { Button } from "./components/Button";
+import { Input } from "./components/Input";
 
 type FormValuesType = {
 	firstName: string;
