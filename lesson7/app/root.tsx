@@ -1,38 +1,42 @@
 import type { LinksFunction } from "@remix-run/node";
 import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
+	Links,
+	Meta,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
 } from "@remix-run/react";
 
 import appStyles from "./app.css?url";
+import { GlobalProvider } from "./context/GlobalProvider";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: appStyles },
+	{ rel: "stylesheet", href: appStyles },
 ];
 
 export function meta() {
-  return [
-    { title: "Remix Theme App" },
-    { name: "description", content: "Simple Remix app with light and dark theme" },
-  ];
+	return [
+		{ title: "Remix Theme App" },
+		{
+			name: "description",
+			content: "Simple Remix app with light and dark theme",
+		},
+	];
 }
 
 export default function App() {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
+	return (
+		<html lang="en" suppressHydrationWarning>
+			<head>
+				<meta charSet="utf-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<Meta />
+				<Links />
+			</head>
+			<body>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
               (function() {
                 var k = 'theme';
                 var s = localStorage.getItem(k);
@@ -41,12 +45,15 @@ export default function App() {
                 document.documentElement.setAttribute('data-theme', theme);
               })();
             `,
-          }}
-        />
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
-  );
+					}}
+				/>
+				<GlobalProvider>
+					<Outlet />
+				</GlobalProvider>
+
+				<ScrollRestoration />
+				<Scripts />
+			</body>
+		</html>
+	);
 }
