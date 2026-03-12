@@ -1,6 +1,6 @@
-import { UserForm } from "@/features/user-form";
 import { CartPage } from "@/features/cart/pages/CartPage.js";
 import { ProductListPage } from "@/features/products/pages/ProductListPage.js";
+import { UserFormPage } from "@/features/user-form";
 import { useState } from "react";
 import "./index.css";
 
@@ -34,7 +34,7 @@ export default function App() {
 			<main>
 				{tab === "products" && <ProductListPage />}
 				{tab === "cart" && <CartPage />}
-				{tab === "register" && <UserForm />}
+				{tab === "register" && <UserFormPage />}
 			</main>
 		</div>
 	);

@@ -1,15 +1,7 @@
-import type { ButtonHTMLAttributes } from "react";
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+	value?: string;
+};
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
-
-export function Button({ children, ...props }: ButtonProps) {
-  return (
-    <button
-      type="button"
-      className="btn"
-      {...props}
-    >
-      {children}
-    </button>
-  );
+export function Button({ value = "submit", ...props }: ButtonProps) {
+	return <button {...props}>{value}</button>;
 }

@@ -25,16 +25,14 @@ export const EmailStartCard = ({ loadEmailRef, onLoad }: Props) => (
 			<div className="flex gap-4 w-full max-w-md">
 				<Button
 					onClick={onLoad}
+					value="Load"
 					className="bg-green-500 flex-1 p-4 rounded text-white font-bold uppercase"
-				>
-					Load
-				</Button>
+				/>
 				<Button
 					onClick={onLoad}
+					value="Create New"
 					className="bg-green-500 flex-1 p-4 rounded text-white font-bold uppercase"
-				>
-					Create New
-				</Button>
+				/>
 			</div>
 		</div>
 	</Card>
