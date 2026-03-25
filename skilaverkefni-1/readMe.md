@@ -65,8 +65,8 @@ Búðu til **React + TypeScript** app sem heitir **Team Task Hub** þar sem note
 
 ## 1. Virkni – 30 stig
 
-- Projects (view/create/select) virka rétt: **10**
-- Tasks CRUD + complete/incomplete: **10**
+- Projects virka rétt: **10**
+- Tasks virka rétt: **10**
 - Leit og síur virka: **5**
 - Dashboard tölfræði virkar: **5**
 
@@ -84,7 +84,7 @@ Búðu til **React + TypeScript** app sem heitir **Team Task Hub** þar sem note
 
 ## 4. State management – 10 stig
 
-- Projects, tasks og CRUD aðgerðir eru í global state: **6**
+- Projects, tasks og aðgerðir eru í global state: **6**
 - Skýr og rökrétt uppbygging á global state: **4**
 
 ## 5. localStorage + Zod – 10 stig
