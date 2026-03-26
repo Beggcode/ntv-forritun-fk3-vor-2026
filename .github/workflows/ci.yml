@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, verkefni-8]
   pull_request:
-  
+
 env:
   PROJECT: "lesson8"
 
@@ -29,12 +29,12 @@ jobs:
         run: npm run lint
         working-directory: ${{ env.PROJECT }}
 
-      - name: Run Tests 
+      - name: Run Tests
         run: npm test
         working-directory: ${{ env.PROJECT }}
 
-      - name: Deploy to Railway 
-        run: npx @railway/cli up --detach
+      - name: Deploy to Railway
+        run: npx @railway/cli up --detach --service ${{ secrets.RAILWAY_SERVICE_ID }}
         working-directory: ${{ env.PROJECT }}
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
