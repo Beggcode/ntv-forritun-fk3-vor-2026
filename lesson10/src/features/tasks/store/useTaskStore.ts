@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import type { Project } from "../../projects/types";
 import type { Task } from "../types";
 
-interface TodoState {
+interface TaskState {
 	projects: Project[];
 	tasks: Task[];
 	addProject: (project: Project) => void;
@@ -13,7 +13,7 @@ interface TodoState {
 	updateTaskStatus: (id: string, status: Task["status"]) => void;
 }
 
-export const useTodoStore = create<TodoState>()(
+export const useTaskStore = create<TaskState>()(
 	persist(
 		(set) => ({
 			projects: [],
@@ -32,6 +32,6 @@ export const useTodoStore = create<TodoState>()(
 					tasks: state.tasks.map((t) => (t.id === id ? { ...t, status } : t)),
 				})),
 		}),
-		{ name: "todo-storage" },
+		{ name: "task-storage" },
 	),
 );
