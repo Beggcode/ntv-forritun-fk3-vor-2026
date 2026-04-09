@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { Project, Task } from "../types";
 
 interface AppState {
@@ -11,28 +12,35 @@ interface AppState {
 	deleteTask: (id: string) => void;
 }
 
-export const useStore = create<AppState>((set) => ({
-	projects: [],
-	tasks: [],
+export const useStore = create<AppState>()(
+	persist(
+		(set) => ({
+			projects: [],
+			tasks: [],
 
-	addProject: (project) =>
-		set((state) => ({ projects: [...state.projects, project] })),
+			addProject: (project) =>
+				set((state) => ({ projects: [...state.projects, project] })),
 
-	deleteProject: (id) =>
-		set((state) => ({
-			projects: state.projects.filter((p) => p.id !== id),
-			tasks: state.tasks.filter((t) => t.projectId !== id),
-		})),
+			deleteProject: (id) =>
+				set((state) => ({
+					projects: state.projects.filter((p) => p.id !== id),
+					tasks: state.tasks.filter((t) => t.projectId !== id),
+				})),
 
-	addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+			addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
 
-	updateTask: (id, updatedTask) =>
-		set((state) => ({
-			tasks: state.tasks.map((t) =>
-				t.id === id ? { ...t, ...updatedTask } : t,
-			),
-		})),
+			updateTask: (id, updatedTask) =>
+				set((state) => ({
+					tasks: state.tasks.map((t) =>
+						t.id === id ? { ...t, ...updatedTask } : t,
+					),
+				})),
 
-	deleteTask: (id) =>
-		set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),
-}));
+			deleteTask: (id) =>
+				set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),
+		}),
+		{
+			name: "team-task-hub-storage",
+		},
+	),
+);
