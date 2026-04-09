@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { Task } from "../types";
+import type { Task } from "../../../shared/types";
 
 export function useTaskFilters(tasks: Task[]) {
 	const [search, setSearch] = useState("");
