@@ -1,10 +1,10 @@
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, type Resolver } from "react-hook-form";
+import { z } from "zod";
 import { TaskSchema } from "../../../shared/types";
 
 const taskFormSchema = TaskSchema.omit({ id: true, createdAt: true });
-type TaskFormData = z.infer<typeof taskFormSchema>;
+type TaskFormData = z.output<typeof taskFormSchema>;
 
 interface TaskFormProps {
 	onSubmit: (data: TaskFormData) => void;
@@ -18,9 +18,11 @@ export const TaskForm = ({ onSubmit, projectId }: TaskFormProps) => {
 		formState: { errors },
 		reset,
 	} = useForm<TaskFormData>({
-		resolver: zodResolver(taskFormSchema),
+		resolver: zodResolver(taskFormSchema) as Resolver<TaskFormData>,
 		defaultValues: {
 			projectId,
+			title: "",
+			description: "",
 			status: "todo",
 			priority: "medium",
 		},
@@ -43,31 +45,32 @@ export const TaskForm = ({ onSubmit, projectId }: TaskFormProps) => {
 				borderRadius: "8px",
 			}}
 		>
+			<input type="hidden" {...register("projectId")} />
+
 			<div>
 				<input
 					{...register("title")}
-					placeholder="What needs to be done?"
-					style={{
-						width: "100%",
-						padding: "8px",
-						borderRadius: "4px",
-						border: "1px solid #444",
-					}}
+					placeholder="Task title..."
+					style={{ width: "100%", padding: "8px", borderRadius: "4px" }}
 				/>
 				{errors.title && (
-					<p
-						style={{ color: "#ff4d4d", fontSize: "0.8rem", margin: "4px 0 0" }}
-					>
+					<p style={{ color: "red", fontSize: "12px", margin: "4px 0" }}>
 						{errors.title.message}
 					</p>
 				)}
 			</div>
 
+			<input
+				{...register("description")}
+				placeholder="Description (optional)"
+				style={{ width: "100%", padding: "8px", borderRadius: "4px" }}
+			/>
+
 			<div style={{ display: "flex", gap: "10px" }}>
 				<select {...register("priority")} style={{ flex: 1, padding: "8px" }}>
-					<option value="low">Low Priority</option>
-					<option value="medium">Medium Priority</option>
-					<option value="high">High Priority</option>
+					<option value="low">Low</option>
+					<option value="medium">Medium</option>
+					<option value="high">High</option>
 				</select>
 
 				<button

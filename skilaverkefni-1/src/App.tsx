@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { ProjectsPage } from "./features/projectManagement/pages/ProjectsPage";
 import { TasksPage } from "./features/taskManagement/pages/TasksPage";
+import { DashboardPage } from "./features/dashboard/pages/DashboardPage";
 
 function App() {
 	return (
@@ -15,44 +16,20 @@ function App() {
 						paddingBottom: "10px",
 					}}
 				>
-					<Link
-						to="/"
-						style={{
-							fontWeight: "bold",
-							textDecoration: "none",
-							color: "#333",
-						}}
-					>
+					<Link to="/" style={navLinkStyle}>
 						Dashboard
 					</Link>
-					<Link
-						to="/projects"
-						style={{
-							fontWeight: "bold",
-							textDecoration: "none",
-							color: "#333",
-						}}
-					>
+					<Link to="/projects" style={navLinkStyle}>
 						Projects
 					</Link>
-					<Link
-						to="/tasks"
-						style={{
-							fontWeight: "bold",
-							textDecoration: "none",
-							color: "#333",
-						}}
-					>
+					<Link to="/tasks" style={navLinkStyle}>
 						All Tasks
 					</Link>
 				</nav>
 
 				<main>
 					<Routes>
-						<Route
-							path="/"
-							element={<div>Dashboard Placeholder (Step 8)</div>}
-						/>
+						<Route path="/" element={<DashboardPage />} />{" "}
 						<Route path="/projects" element={<ProjectsPage />} />
 						<Route path="/tasks" element={<TasksPage />} />
 					</Routes>
@@ -61,5 +38,11 @@ function App() {
 		</Router>
 	);
 }
+
+const navLinkStyle = {
+	fontWeight: "bold",
+	textDecoration: "none",
+	color: "#333",
+};
 
 export default App;
