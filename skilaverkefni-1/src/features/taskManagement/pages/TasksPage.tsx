@@ -16,7 +16,10 @@ import {
 	useMediaQuery,
 	useTheme,
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material";
+import type { ChangeEvent } from "react";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useStore } from "../../../shared/store/useStore";
 import type { Task } from "../../../shared/types";
@@ -29,16 +32,27 @@ type TaskFormData = Omit<Task, "id" | "createdAt">;
 
 export const TasksPage = () => {
 	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [searchParams] = useSearchParams();
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-	const { tasks, deleteTask, updateTask, addTask } = useStore();
-	const { filteredTasks, setSearch, setStatusFilter } = useTaskFilters(tasks);
+	const { tasks, deleteTask, updateTask, addTask, projects } = useStore();
+
+	const projectIdFilter = searchParams.get("projectId");
+
+	const projectSpecificTasks = projectIdFilter
+		? tasks.filter((t) => t.projectId === projectIdFilter)
+		: tasks;
+
+	const { filteredTasks, setSearch, setStatusFilter } =
+		useTaskFilters(projectSpecificTasks);
+	const activeProject = projects.find((p) => p.id === projectIdFilter);
 
 	const handleAddTask = (data: TaskFormData) => {
 		addTask({
 			...data,
 			id: uuidv4(),
+			projectId: projectIdFilter || data.projectId,
 			createdAt: new Date().toISOString(),
 		});
 		setIsFormOpen(false);
@@ -48,7 +62,7 @@ export const TasksPage = () => {
 		<Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
 			<ActionHeader>
 				<Typography variant="h4" sx={{ fontWeight: "bold" }}>
-					All Tasks
+					{activeProject ? `${activeProject.name} Tasks` : "All Tasks"}
 				</Typography>
 				{!isMobile && (
 					<Button
@@ -73,16 +87,21 @@ export const TasksPage = () => {
 					fullWidth
 					label="Search tasks..."
 					variant="outlined"
-					onChange={(e) => setSearch(e.target.value)}
+					onChange={(e: ChangeEvent<HTMLInputElement>) =>
+						setSearch(e.target.value)
+					}
 					sx={{ backgroundColor: "white" }}
 				/>
 
 				<FormControl sx={{ minWidth: 200 }}>
-					<InputLabel>Status</InputLabel>
+					<InputLabel id="status-select-label">Status</InputLabel>
 					<Select
+						labelId="status-select-label"
 						label="Status"
 						defaultValue="all"
-						onChange={(e) => setStatusFilter(e.target.value as string)}
+						onChange={(e: SelectChangeEvent) =>
+							setStatusFilter(e.target.value as string)
+						}
 					>
 						<MenuItem value="all">All Statuses</MenuItem>
 						<MenuItem value="todo">Todo</MenuItem>
@@ -94,7 +113,7 @@ export const TasksPage = () => {
 
 			<Grid container spacing={3}>
 				{filteredTasks.length === 0 ? (
-					<Grid size={12}>
+					<Grid size={{ xs: 12 }}>
 						<Typography color="text.secondary" align="center" sx={{ py: 8 }}>
 							No tasks found.
 						</Typography>
@@ -128,9 +147,14 @@ export const TasksPage = () => {
 				fullWidth
 				maxWidth="sm"
 			>
-				<DialogTitle sx={{ fontWeight: "bold" }}>Create New Task</DialogTitle>
+				<DialogTitle sx={{ fontWeight: "bold" }}>
+					Create New Task {activeProject ? `for ${activeProject.name}` : ""}
+				</DialogTitle>
 				<DialogContent>
-					<TaskForm projectId="default-project" onSubmit={handleAddTask} />
+					<TaskForm
+						projectId={projectIdFilter || "default-project"}
+						onSubmit={handleAddTask}
+					/>
 				</DialogContent>
 			</Dialog>
 		</Container>

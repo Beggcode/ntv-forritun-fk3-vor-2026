@@ -1,17 +1,23 @@
-import {
-	CardContent,
-	CardActions,
-	Typography,
-	IconButton,
-	Select,
-	MenuItem,
-	FormControl,
-	Box,
-	Divider,
-} from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { StyledCard } from "../styles";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import {
+	Box,
+	CardActions,
+	Divider,
+	FormControl,
+	IconButton,
+	MenuItem,
+	Select,
+	Typography,
+} from "@mui/material";
+import { useStore } from "../../../shared/store/useStore";
 import type { Task } from "../../../shared/types";
+import {
+	PriorityTag,
+	ProjectBadge,
+	StyledCard,
+	TaskContent,
+} from "../styles/Card.styles";
 
 interface TaskCardProps {
 	task: Task;
@@ -20,11 +26,22 @@ interface TaskCardProps {
 }
 
 export const TaskCard = ({ task, onDelete, onUpdateStatus }: TaskCardProps) => {
+	const { projects } = useStore();
+	const project = projects.find((p) => p.id === task.projectId);
+
 	return (
 		<StyledCard elevation={0}>
-			{/* The main content area */}
-			<CardContent sx={{ flexGrow: 1, p: 3 }}>
-				<Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+			<TaskContent>
+				<Box sx={{ mb: 1.5 }}>
+					<ProjectBadge
+						icon={<FolderOpenIcon />}
+						label={project ? project.name : "Unassigned"}
+						color={project ? "primary" : "default"}
+						variant={project ? "filled" : "outlined"}
+					/>
+				</Box>
+
+				<Typography variant="h6" sx={{ fontWeight: "bold", mb: 0.5 }}>
 					{task.title}
 				</Typography>
 
@@ -35,27 +52,12 @@ export const TaskCard = ({ task, onDelete, onUpdateStatus }: TaskCardProps) => {
 				)}
 
 				<Box sx={{ mt: "auto" }}>
-					<Typography
-						variant="caption"
-						sx={{
-							fontWeight: "bold",
-							letterSpacing: 1,
-							px: 1,
-							py: 0.5,
-							borderRadius: 1,
-							bgcolor:
-								task.priority === "high" ? "error.light" : "action.hover",
-							color: task.priority === "high" ? "error.main" : "text.secondary",
-						}}
-					>
-						{task.priority.toUpperCase()}
-					</Typography>
+					<PriorityTag priority={task.priority}>{task.priority}</PriorityTag>
 				</Box>
-			</CardContent>
+			</TaskContent>
 
 			<Divider />
 
-			{/* The actions footer */}
 			<CardActions
 				sx={{
 					px: 2,
@@ -78,11 +80,7 @@ export const TaskCard = ({ task, onDelete, onUpdateStatus }: TaskCardProps) => {
 					</Select>
 				</FormControl>
 
-				<IconButton
-					onClick={() => onDelete(task.id)}
-					color="error"
-					sx={{ "&:hover": { bgcolor: "rgba(211, 47, 47, 0.04)" } }}
-				>
+				<IconButton onClick={() => onDelete(task.id)} color="error">
 					<DeleteOutlineIcon />
 				</IconButton>
 			</CardActions>
