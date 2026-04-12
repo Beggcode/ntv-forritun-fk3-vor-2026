@@ -11,7 +11,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useStats } from "../../../shared/hooks/useStats";
 import { useStore } from "../../../shared/store/useStore";
-import { StyledNotification, StyledStatCard } from "./DashboardPage.styles";
+import {
+	StyledNotification,
+	StyledStatCard,
+} from "../styles/DashboardPage.styles";
 
 export const DashboardPage = () => {
 	const { tasks, projects } = useStore();

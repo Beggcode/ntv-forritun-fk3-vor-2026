@@ -1,3 +1,16 @@
+import {
+	CardContent,
+	CardActions,
+	Typography,
+	IconButton,
+	Select,
+	MenuItem,
+	FormControl,
+	Box,
+	Divider,
+} from "@mui/material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { StyledCard } from "../styles";
 import type { Task } from "../../../shared/types";
 
 interface TaskCardProps {
@@ -8,37 +21,71 @@ interface TaskCardProps {
 
 export const TaskCard = ({ task, onDelete, onUpdateStatus }: TaskCardProps) => {
 	return (
-		<div
-			style={{
-				border: "1px solid #eee",
-				padding: "1rem",
-				margin: "0.5rem 0",
-				borderRadius: "4px",
-			}}
-		>
-			<h4>{task.title}</h4>
-			{task.description && (
-				<p
-					style={{ fontSize: "0.9rem", color: "#666", marginBottom: "0.5rem" }}
-				>
-					{task.description}
-				</p>
-			)}
+		<StyledCard elevation={0}>
+			{/* The main content area */}
+			<CardContent sx={{ flexGrow: 1, p: 3 }}>
+				<Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+					{task.title}
+				</Typography>
 
-			<p>Priority: {task.priority}</p>
-			<select
-				value={task.status}
-				onChange={(e) =>
-					onUpdateStatus(task.id, e.target.value as Task["status"])
-				}
+				{task.description && (
+					<Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+						{task.description}
+					</Typography>
+				)}
+
+				<Box sx={{ mt: "auto" }}>
+					<Typography
+						variant="caption"
+						sx={{
+							fontWeight: "bold",
+							letterSpacing: 1,
+							px: 1,
+							py: 0.5,
+							borderRadius: 1,
+							bgcolor:
+								task.priority === "high" ? "error.light" : "action.hover",
+							color: task.priority === "high" ? "error.main" : "text.secondary",
+						}}
+					>
+						{task.priority.toUpperCase()}
+					</Typography>
+				</Box>
+			</CardContent>
+
+			<Divider />
+
+			{/* The actions footer */}
+			<CardActions
+				sx={{
+					px: 2,
+					py: 1.5,
+					justifyContent: "space-between",
+					bgcolor: "#fafafa",
+				}}
 			>
-				<option value="todo">Todo</option>
-				<option value="in-progress">In Progress</option>
-				<option value="done">Done</option>
-			</select>
-			<button onClick={() => onDelete(task.id)} style={{ marginLeft: "10px" }}>
-				Delete
-			</button>
-		</div>
+				<FormControl size="small" sx={{ minWidth: 120 }}>
+					<Select
+						value={task.status}
+						onChange={(e) =>
+							onUpdateStatus(task.id, e.target.value as Task["status"])
+						}
+						sx={{ borderRadius: 2, fontSize: "0.875rem", bgcolor: "white" }}
+					>
+						<MenuItem value="todo">Todo</MenuItem>
+						<MenuItem value="in-progress">In Progress</MenuItem>
+						<MenuItem value="done">Done</MenuItem>
+					</Select>
+				</FormControl>
+
+				<IconButton
+					onClick={() => onDelete(task.id)}
+					color="error"
+					sx={{ "&:hover": { bgcolor: "rgba(211, 47, 47, 0.04)" } }}
+				>
+					<DeleteOutlineIcon />
+				</IconButton>
+			</CardActions>
+		</StyledCard>
 	);
 };

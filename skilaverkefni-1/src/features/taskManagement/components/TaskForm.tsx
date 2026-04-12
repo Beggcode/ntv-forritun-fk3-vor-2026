@@ -1,92 +1,100 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type Resolver } from "react-hook-form";
-import { z } from "zod";
-import { TaskSchema } from "../../../shared/types";
+import { useState } from "react";
+import {
+	TextField,
+	Button,
+	Select,
+	MenuItem,
+	FormControl,
+	InputLabel,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { FormContainer, FormRow } from "../styles";
+import type { Task } from "../../../shared/types";
 
-const taskFormSchema = TaskSchema.omit({ id: true, createdAt: true });
-type TaskFormData = z.output<typeof taskFormSchema>;
+type TaskPriority = "low" | "medium" | "high";
+
+type TaskFormData = Omit<Task, "id" | "createdAt">;
 
 interface TaskFormProps {
-	onSubmit: (data: TaskFormData) => void;
 	projectId: string;
+	onSubmit: (task: TaskFormData) => void;
 }
 
-export const TaskForm = ({ onSubmit, projectId }: TaskFormProps) => {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<TaskFormData>({
-		resolver: zodResolver(taskFormSchema) as Resolver<TaskFormData>,
-		defaultValues: {
-			projectId,
-			title: "",
-			description: "",
-			status: "todo",
-			priority: "medium",
-		},
-	});
+export const TaskForm = ({ projectId, onSubmit }: TaskFormProps) => {
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+	const [priority, setPriority] = useState<TaskPriority>("medium");
 
-	const handleFormSubmit = (data: TaskFormData) => {
-		onSubmit(data);
-		reset();
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!title.trim()) return;
+
+		onSubmit({
+			projectId,
+			title,
+			description,
+			priority,
+			status: "todo",
+		});
+
+		setTitle("");
+		setDescription("");
+		setPriority("medium");
 	};
 
 	return (
-		<form
-			onSubmit={handleSubmit(handleFormSubmit)}
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				gap: "12px",
-				padding: "15px",
-				background: "#222",
-				borderRadius: "8px",
-			}}
-		>
-			<input type="hidden" {...register("projectId")} />
-
-			<div>
-				<input
-					{...register("title")}
-					placeholder="Task title..."
-					style={{ width: "100%", padding: "8px", borderRadius: "4px" }}
+		<form onSubmit={handleSubmit}>
+			<FormContainer>
+				<TextField
+					label="Task title..."
+					variant="outlined"
+					value={title}
+					onChange={(e) => setTitle(e.target.value)}
+					required
+					fullWidth
 				/>
-				{errors.title && (
-					<p style={{ color: "red", fontSize: "12px", margin: "4px 0" }}>
-						{errors.title.message}
-					</p>
-				)}
-			</div>
 
-			<input
-				{...register("description")}
-				placeholder="Description (optional)"
-				style={{ width: "100%", padding: "8px", borderRadius: "4px" }}
-			/>
+				<TextField
+					label="Description (optional)..."
+					variant="outlined"
+					value={description}
+					onChange={(e) => setDescription(e.target.value)}
+					multiline
+					rows={3}
+					fullWidth
+				/>
 
-			<div style={{ display: "flex", gap: "10px" }}>
-				<select {...register("priority")} style={{ flex: 1, padding: "8px" }}>
-					<option value="low">Low</option>
-					<option value="medium">Medium</option>
-					<option value="high">High</option>
-				</select>
+				<FormRow>
+					<FormControl fullWidth>
+						<InputLabel>Priority</InputLabel>
+						<Select
+							value={priority}
+							onChange={(e) => setPriority(e.target.value as TaskPriority)}
+							label="Priority"
+						>
+							<MenuItem value="low">Low</MenuItem>
+							<MenuItem value="medium">Medium</MenuItem>
+							<MenuItem value="high">High</MenuItem>
+						</Select>
+					</FormControl>
 
-				<button
-					type="submit"
-					style={{
-						padding: "8px 16px",
-						background: "#007bff",
-						color: "white",
-						border: "none",
-						borderRadius: "4px",
-						cursor: "pointer",
-					}}
-				>
-					Add Task
-				</button>
-			</div>
+					<Button
+						type="submit"
+						variant="contained"
+						startIcon={<AddIcon />}
+						sx={{
+							height: 56,
+							px: 4,
+							borderRadius: 2,
+							textTransform: "none",
+							fontWeight: "bold",
+							whiteSpace: "nowrap",
+						}}
+					>
+						Add Task
+					</Button>
+				</FormRow>
+			</FormContainer>
 		</form>
 	);
 };
