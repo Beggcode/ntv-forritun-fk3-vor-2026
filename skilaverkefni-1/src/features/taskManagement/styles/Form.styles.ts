@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { Box, Button, styled } from "@mui/material";
 
 export const FormContainer = styled(Box)(({ theme }) => ({
 	padding: theme.spacing(2, 0),
@@ -14,5 +14,19 @@ export const FormRow = styled(Box)(({ theme }) => ({
 	[theme.breakpoints.down("sm")]: {
 		flexDirection: "column",
 		alignItems: "stretch",
+	},
+}));
+
+export const SubmitButton = styled(Button)(({ theme }) => ({
+	height: 56,
+	paddingLeft: theme.spacing(4),
+	paddingRight: theme.spacing(4),
+	borderRadius: theme.spacing(1),
+	textTransform: "none",
+	fontWeight: "bold",
+	whiteSpace: "nowrap",
+	boxShadow: "none",
+	"&:hover": {
+		boxShadow: theme.shadows[2],
 	},
 }));

@@ -1,15 +1,16 @@
-import {
-	CardContent,
-	Typography,
-	Button,
-	IconButton,
-	Divider,
-} from "@mui/material";
+import { Typography, IconButton, Divider } from "@mui/material";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import DeleteIcon from "@mui/icons-material/Delete"; // Changed this for better compatibility
-import { StyledProjectCard, ProjectHeader, ProjectFooter } from "../styles";
+import DeleteIcon from "@mui/icons-material/Delete";
 import type { Project } from "../../../shared/types";
+import {
+	StyledProjectCard,
+	ProjectHeader,
+	ProjectFooter,
+	ProjectContent,
+	TaskCountLabel,
+	ViewButton,
+} from "../styles/ProjectCard.styles";
 
 interface ProjectCardProps {
 	project: Project;
@@ -26,9 +27,7 @@ export const ProjectCard = ({
 }: ProjectCardProps) => {
 	return (
 		<StyledProjectCard elevation={0}>
-			<CardContent
-				sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}
-			>
+			<ProjectContent>
 				<ProjectHeader>
 					<FolderOpenIcon color="primary" />
 					<Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -40,25 +39,21 @@ export const ProjectCard = ({
 					{project.description || "No description provided."}
 				</Typography>
 
-				<Typography
-					variant="caption"
-					sx={{ fontWeight: "bold", color: "primary.main", mt: "auto" }}
-				>
+				<TaskCountLabel variant="caption">
 					{taskCount} {taskCount === 1 ? "TASK" : "TASKS"}
-				</Typography>
-			</CardContent>
+				</TaskCountLabel>
+			</ProjectContent>
 
 			<Divider />
 
-			<ProjectFooter sx={{ display: "flex", gap: 1 }}>
-				<Button
+			<ProjectFooter>
+				<ViewButton
 					variant="outlined"
 					endIcon={<ArrowForwardIcon />}
 					onClick={() => onViewTasks(project.id)}
-					sx={{ borderRadius: 2, textTransform: "none", flexGrow: 1 }}
 				>
 					View Project
-				</Button>
+				</ViewButton>
 				<IconButton
 					onClick={() => onDelete(project.id)}
 					color="error"

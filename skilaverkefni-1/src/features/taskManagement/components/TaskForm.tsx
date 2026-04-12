@@ -1,18 +1,16 @@
 import { useState } from "react";
 import {
 	TextField,
-	Button,
 	Select,
 	MenuItem,
 	FormControl,
 	InputLabel,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { FormContainer, FormRow } from "../styles";
+import { FormContainer, FormRow, SubmitButton } from "../styles";
 import type { Task } from "../../../shared/types";
 
 type TaskPriority = "low" | "medium" | "high";
-
 type TaskFormData = Omit<Task, "id" | "createdAt">;
 
 interface TaskFormProps {
@@ -78,21 +76,13 @@ export const TaskForm = ({ projectId, onSubmit }: TaskFormProps) => {
 						</Select>
 					</FormControl>
 
-					<Button
+					<SubmitButton
 						type="submit"
 						variant="contained"
 						startIcon={<AddIcon />}
-						sx={{
-							height: 56,
-							px: 4,
-							borderRadius: 2,
-							textTransform: "none",
-							fontWeight: "bold",
-							whiteSpace: "nowrap",
-						}}
 					>
 						Add Task
-					</Button>
+					</SubmitButton>
 				</FormRow>
 			</FormContainer>
 		</form>

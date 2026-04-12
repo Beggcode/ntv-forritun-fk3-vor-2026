@@ -1,8 +1,8 @@
-import { Box, Card, Chip, Typography, styled } from "@mui/material";
+import { Box, Card, Chip, styled } from "@mui/material";
 
 export const StyledCard = styled(Card)(({ theme }) => ({
-	borderRadius: theme.spacing(2),
-	boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+	borderRadius: theme.spacing(1.5),
+	boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
 	transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
 	height: "100%",
 	display: "flex",
@@ -24,31 +24,47 @@ export const TaskContent = styled(Box)(({ theme }) => ({
 
 export const ProjectBadge = styled(Chip)(({ theme }) => ({
 	fontSize: "0.7rem",
-	fontWeight: "bold",
-	borderRadius: theme.spacing(0.8),
+	fontWeight: 600,
+	borderRadius: theme.spacing(0.5),
 	height: 24,
-	cursor: "default",
 	"& .MuiChip-icon": {
-		fontSize: 14,
+		fontSize: "1rem !important",
 	},
 }));
 
-export const PriorityTag = styled(Typography, {
+export const PriorityTag = styled(Box, {
 	shouldForwardProp: (prop) => prop !== "priority",
-})<{ priority: string }>(({ theme, priority }) => ({
-	fontSize: "0.65rem",
-	fontWeight: 800,
-	letterSpacing: "0.05rem",
-	padding: theme.spacing(0.4, 1),
-	borderRadius: theme.spacing(0.6),
-	display: "inline-block",
-	backgroundColor:
-		priority === "high"
-			? theme.palette.error.light
-			: theme.palette.action.hover,
-	color:
-		priority === "high"
-			? theme.palette.error.main
-			: theme.palette.text.secondary,
-	textTransform: "uppercase",
+})<{ priority: string }>(({ theme, priority }) => {
+	const colors: Record<string, { bg: string; text: string }> = {
+		high: { bg: "#d32f2f", text: "#fff" },
+		medium: { bg: "#ed6c02", text: "#fff" },
+		low: { bg: "#2e7d32", text: "#fff" },
+	};
+	const style = colors[priority.toLowerCase()] || {
+		bg: "#757575",
+		text: "#fff",
+	};
+
+	return {
+		fontSize: "0.65rem",
+		fontWeight: 900,
+		letterSpacing: "0.05rem",
+		padding: theme.spacing(0.5, 1),
+		borderRadius: theme.spacing(0.5),
+		display: "inline-block",
+		backgroundColor: style.bg,
+		color: style.text,
+		textTransform: "uppercase",
+		lineHeight: 1,
+	};
+});
+
+export const TaskFooter = styled(Box)(({ theme }) => ({
+	padding: theme.spacing(2),
+	paddingTop: 0,
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+	borderTop: "1px solid",
+	borderColor: theme.palette.grey[100],
 }));

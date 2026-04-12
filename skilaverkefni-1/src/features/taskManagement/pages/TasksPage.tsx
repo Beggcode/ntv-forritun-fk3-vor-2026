@@ -1,160 +1,222 @@
-import AddIcon from "@mui/icons-material/Add";
-import {
-	Button,
-	Container,
-	Dialog,
-	DialogContent,
-	DialogTitle,
-	Fab,
-	FormControl,
-	Grid,
-	InputLabel,
-	MenuItem,
-	Select,
-	TextField,
-	Typography,
-	useMediaQuery,
-	useTheme,
-} from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
-import type { ChangeEvent } from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import {
+	Container,
+	Typography,
+	Button,
+	TextField,
+	MenuItem,
+	Grid,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	Stack,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useStore } from "../../../shared/store/useStore";
-import type { Task } from "../../../shared/types";
 import { TaskCard } from "../components/TaskCard";
-import { TaskForm } from "../components/TaskForm";
-import { useTaskFilters } from "../hooks/useTaskFilters";
-import { ActionHeader, FilterContainer } from "../styles";
+import { TaskSchema } from "../../../shared/types";
+import type { Task } from "../../../shared/store/useStore";
+import {
+	ActionHeader,
+	FilterContainer,
+	ModalFormWrapper,
+} from "../styles/TasksPage.styles";
 
 type TaskFormData = Omit<Task, "id" | "createdAt">;
 
 export const TasksPage = () => {
-	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [searchParams] = useSearchParams();
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+	const projectIdParam = searchParams.get("projectId");
+	const { tasks, projects, deleteTask, updateTask, addTask } = useStore();
 
-	const { tasks, deleteTask, updateTask, addTask, projects } = useStore();
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [statusFilter, setStatusFilter] = useState("all");
+	const [priorityFilter, setPriorityFilter] = useState("all");
 
-	const projectIdFilter = searchParams.get("projectId");
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm<TaskFormData>({
+		resolver: zodResolver(TaskSchema.omit({ id: true, createdAt: true })),
+		defaultValues: {
+			projectId: projectIdParam || "",
+			status: "todo",
+			priority: "medium",
+		},
+	});
 
-	const projectSpecificTasks = projectIdFilter
-		? tasks.filter((t) => t.projectId === projectIdFilter)
-		: tasks;
-
-	const { filteredTasks, setSearch, setStatusFilter } =
-		useTaskFilters(projectSpecificTasks);
-	const activeProject = projects.find((p) => p.id === projectIdFilter);
-
-	const handleAddTask = (data: TaskFormData) => {
-		addTask({
-			...data,
-			id: uuidv4(),
-			projectId: projectIdFilter || data.projectId,
-			createdAt: new Date().toISOString(),
+	const filteredTasks = useMemo(() => {
+		return tasks.filter((task) => {
+			const matchesProject = projectIdParam
+				? task.projectId === projectIdParam
+				: true;
+			const matchesSearch = task.title
+				.toLowerCase()
+				.includes(searchTerm.toLowerCase());
+			const matchesStatus =
+				statusFilter === "all" || task.status === statusFilter;
+			const matchesPriority =
+				priorityFilter === "all" || task.priority === priorityFilter;
+			return (
+				matchesProject && matchesSearch && matchesStatus && matchesPriority
+			);
 		});
-		setIsFormOpen(false);
+	}, [tasks, projectIdParam, searchTerm, statusFilter, priorityFilter]);
+
+	const onFormSubmit = (data: TaskFormData) => {
+		addTask({ ...data, id: uuidv4(), createdAt: new Date().toISOString() });
+		setIsModalOpen(false);
+		reset();
 	};
 
 	return (
-		<Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
+		<Container maxWidth="lg" sx={{ py: 4 }}>
 			<ActionHeader>
 				<Typography variant="h4" sx={{ fontWeight: "bold" }}>
-					{activeProject ? `${activeProject.name} Tasks` : "All Tasks"}
+					Tasks{" "}
+					{projectIdParam &&
+						` - ${projects.find((p) => p.id === projectIdParam)?.name}`}
 				</Typography>
-				{!isMobile && (
-					<Button
-						variant="contained"
-						startIcon={<AddIcon />}
-						onClick={() => setIsFormOpen(true)}
-						sx={{
-							borderRadius: 2,
-							px: 3,
-							py: 1,
-							textTransform: "none",
-							fontWeight: "bold",
-						}}
-					>
-						New Task
-					</Button>
-				)}
+				<Button
+					variant="contained"
+					startIcon={<AddIcon />}
+					onClick={() => setIsModalOpen(true)}
+				>
+					New Task
+				</Button>
 			</ActionHeader>
 
-			<FilterContainer>
+			<FilterContainer direction={{ xs: "column", sm: "row" }} spacing={2}>
 				<TextField
+					label="Search tasks"
+					size="small"
 					fullWidth
-					label="Search tasks..."
-					variant="outlined"
-					onChange={(e: ChangeEvent<HTMLInputElement>) =>
-						setSearch(e.target.value)
-					}
-					sx={{ backgroundColor: "white" }}
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
 				/>
-
-				<FormControl sx={{ minWidth: 200 }}>
-					<InputLabel id="status-select-label">Status</InputLabel>
-					<Select
-						labelId="status-select-label"
-						label="Status"
-						defaultValue="all"
-						onChange={(e: SelectChangeEvent) =>
-							setStatusFilter(e.target.value as string)
-						}
-					>
-						<MenuItem value="all">All Statuses</MenuItem>
-						<MenuItem value="todo">Todo</MenuItem>
-						<MenuItem value="in-progress">In Progress</MenuItem>
-						<MenuItem value="done">Done</MenuItem>
-					</Select>
-				</FormControl>
+				<TextField
+					select
+					label="Status"
+					size="small"
+					sx={{ minWidth: 150 }}
+					value={statusFilter}
+					onChange={(e) => setStatusFilter(e.target.value)}
+				>
+					<MenuItem value="all">All Statuses</MenuItem>
+					<MenuItem value="todo">Todo</MenuItem>
+					<MenuItem value="in-progress">In Progress</MenuItem>
+					<MenuItem value="done">Done</MenuItem>
+				</TextField>
+				<TextField
+					select
+					label="Priority"
+					size="small"
+					sx={{ minWidth: 150 }}
+					value={priorityFilter}
+					onChange={(e) => setPriorityFilter(e.target.value)}
+				>
+					<MenuItem value="all">All Priorities</MenuItem>
+					<MenuItem value="low">Low</MenuItem>
+					<MenuItem value="medium">Medium</MenuItem>
+					<MenuItem value="high">High</MenuItem>
+				</TextField>
 			</FilterContainer>
 
 			<Grid container spacing={3}>
-				{filteredTasks.length === 0 ? (
-					<Grid size={{ xs: 12 }}>
-						<Typography color="text.secondary" align="center" sx={{ py: 8 }}>
-							No tasks found.
-						</Typography>
+				{filteredTasks.map((task) => (
+					<Grid size={{ xs: 12, sm: 6, md: 4 }} key={task.id}>
+						<TaskCard
+							task={task}
+							projectName={projects.find((p) => p.id === task.projectId)?.name}
+							onDelete={deleteTask}
+							onStatusChange={(id, status) => updateTask(id, { status })}
+						/>
 					</Grid>
-				) : (
-					filteredTasks.map((task) => (
-						<Grid key={task.id} size={{ xs: 12, md: 6, lg: 4 }}>
-							<TaskCard
-								task={task}
-								onDelete={deleteTask}
-								onUpdateStatus={(id, status) => updateTask(id, { status })}
-							/>
-						</Grid>
-					))
-				)}
+				))}
 			</Grid>
 
-			{isMobile && (
-				<Fab
-					color="primary"
-					onClick={() => setIsFormOpen(true)}
-					sx={{ position: "fixed", bottom: 16, right: 16 }}
-				>
-					<AddIcon />
-				</Fab>
-			)}
-
 			<Dialog
-				open={isFormOpen}
-				onClose={() => setIsFormOpen(false)}
+				open={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
 				fullWidth
 				maxWidth="sm"
 			>
-				<DialogTitle sx={{ fontWeight: "bold" }}>
-					Create New Task {activeProject ? `for ${activeProject.name}` : ""}
-				</DialogTitle>
+				<DialogTitle sx={{ fontWeight: "bold" }}>Create New Task</DialogTitle>
 				<DialogContent>
-					<TaskForm
-						projectId={projectIdFilter || "default-project"}
-						onSubmit={handleAddTask}
-					/>
+					<ModalFormWrapper
+						component="form"
+						onSubmit={handleSubmit(onFormSubmit)}
+					>
+						<Stack spacing={3} sx={{ mt: 1 }}>
+							<TextField
+								fullWidth
+								label="Title *"
+								{...register("title")}
+								error={!!errors.title}
+								helperText={errors.title?.message}
+							/>
+							<TextField
+								select
+								fullWidth
+								label="Project *"
+								defaultValue={projectIdParam || ""}
+								{...register("projectId")}
+								error={!!errors.projectId}
+							>
+								{projects.map((p) => (
+									<MenuItem key={p.id} value={p.id}>
+										{p.name}
+									</MenuItem>
+								))}
+							</TextField>
+							<Stack direction="row" spacing={2}>
+								<TextField
+									select
+									fullWidth
+									label="Priority"
+									{...register("priority")}
+								>
+									<MenuItem value="low">Low</MenuItem>
+									<MenuItem value="medium">Medium</MenuItem>
+									<MenuItem value="high">High</MenuItem>
+								</TextField>
+								<TextField
+									select
+									fullWidth
+									label="Status"
+									{...register("status")}
+								>
+									<MenuItem value="todo">Todo</MenuItem>
+									<MenuItem value="in-progress">In Progress</MenuItem>
+									<MenuItem value="done">Done</MenuItem>
+								</TextField>
+							</Stack>
+							<TextField
+								fullWidth
+								label="Description"
+								multiline
+								rows={3}
+								{...register("description")}
+							/>
+							<Stack
+								direction="row"
+								spacing={2}
+								sx={{ justifyContent: "flex-end" }}
+							>
+								<Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+								<Button type="submit" variant="contained">
+									Create
+								</Button>
+							</Stack>
+						</Stack>
+					</ModalFormWrapper>
 				</DialogContent>
 			</Dialog>
 		</Container>
