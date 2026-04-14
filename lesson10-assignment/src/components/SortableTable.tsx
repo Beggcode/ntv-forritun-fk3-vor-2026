@@ -1,7 +1,5 @@
-
+import type { ReactNode } from "react";
 // TODO:
-// IF YOU WANT TO ATTEMPT: REMOVE THIS LINE
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // DO NOT DO (unless you want an extra challenge): Make this component generic over the row data type.
 // `columns` should be an array where each column's `accessor` is constrained to `keyof T`,
@@ -14,47 +12,64 @@
 // THIS IS AN EXTRA ASSIGNMENT DONT BOTHER IF YOU DONT CARE! ❤️
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-function SortableTable({ data, columns, sortBy, sortDirection, onSort, className }: any) {
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // THIS IS AN EXTRA ASSIGNMENT DONT BOTHER IF YOU DONT CARE! ❤️
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  return (
-    <table className={`w-full border-collapse ${className || ''}`}>
-      <thead>
-        <tr>
-          {columns.map((col: any) => (
-            <th
-              key={col.accessor}
-              onClick={() => onSort?.(col.accessor)}
-              className="cursor-pointer border-b p-2 text-left font-semibold hover:bg-gray-50"
-            >
-              {col.label}
-              {sortBy === col.accessor && (
-                <span className="ml-1">{sortDirection === 'asc' ? '▲' : '▼'}</span>
-              )}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      {/* // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-          // THIS IS AN EXTRA ASSIGNMENT DONT BOTHER IF YOU DONT CARE! ❤️
-          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        */}
-      <tbody>
-        {data.map((row: any, index: number) => (
-          <tr key={index}>
-            {columns.map((col: any) => (
-              <td key={col.accessor} className="border-b p-2">
-                {col.format
-                  ? col.format(row[col.accessor])
-                  : String(row[col.accessor])}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+interface Column<T> {
+	accessor: keyof T;
+	label: string;
+	format?: (value: T[keyof T]) => ReactNode;
+}
+
+interface SortableTableProps<T> {
+	data: T[];
+	columns: Column<T>[];
+	sortBy?: keyof T;
+	sortDirection?: "asc" | "desc";
+	onSort?: (key: keyof T) => void;
+	className?: string;
+}
+
+function SortableTable<T>({
+	data,
+	columns,
+	sortBy,
+	sortDirection,
+	onSort,
+	className,
+}: SortableTableProps<T>) {
+	return (
+		<table className={`w-full border-collapse ${className || ""}`}>
+			<thead>
+				<tr>
+					{columns.map((col) => (
+						<th
+							key={String(col.accessor)}
+							onClick={() => onSort?.(col.accessor)}
+							className="cursor-pointer border-b p-2 text-left font-semibold hover:bg-gray-50"
+						>
+							{col.label}
+							{sortBy === col.accessor && (
+								<span className="ml-1">
+									{sortDirection === "asc" ? "▲" : "▼"}
+								</span>
+							)}
+						</th>
+					))}
+				</tr>
+			</thead>
+			<tbody>
+				{data.map((row, index) => (
+					<tr key={index}>
+						{columns.map((col) => (
+							<td key={String(col.accessor)} className="border-b p-2">
+								{col.format
+									? col.format(row[col.accessor])
+									: String(row[col.accessor] ?? "")}
+							</td>
+						))}
+					</tr>
+				))}
+			</tbody>
+		</table>
+	);
 }
 
 export { SortableTable };
