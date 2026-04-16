@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // Three buttons, three different error paths for demoing
 function CrashOnRender() {
@@ -31,34 +31,6 @@ export function IndexPage() {
       throw new Error('Error from setTimeout!');
     }, 0);
   };
-
-  const [state, setState] = useState({
-    hasError: false
-  })
-  // const showBubbleError = () => {
-  //   function doWork() {
-  //     try {
-  //       const foo = undefined
-  //       console.log(foo.bar)
-
-  //     } catch (err) {
-  //       throw new Error("Failed in some way", { cause: err });
-  //     }
-  //   }
-
-  //   try {
-  //     doWork();
-  //   } catch (err) {
-  //     switch (err.message) {
-  //       case "Failed in some way":
-  //         handleFailSomeWay(err.cause);
-  //         break;
-  //       case "Failed in another way":
-  //         handleFailAnotherWay(err.cause);
-  //         break;
-  //     }
-  //   }
-  // }
 
   return (
     <main className="min-h-screen bg-background">
