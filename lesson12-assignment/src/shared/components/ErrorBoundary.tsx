@@ -16,3 +16,40 @@
 // Hints:
 // - Import { Component, type ErrorInfo, type ReactNode } from 'react'
 // - Import { logger } from '@/shared/lib/logger'
+
+import { Component, type ErrorInfo, type ReactNode } from "react";
+import { logger } from "../lib/logger";
+
+interface Props {
+	children: ReactNode;
+}
+
+interface State {
+	hasError: boolean;
+}
+
+export class ErrorBoundary extends Component<Props, State> {
+	constructor(props: Props) {
+		super(props);
+		this.state = { hasError: false };
+	}
+	static getDerivedStateFromError(): State {
+		return { hasError: true };
+	}
+
+	componentDidCatch(error: Error, info: ErrorInfo) {
+		logger.error("Render crash caught by boundary", { error, info });
+	}
+
+	render() {
+		if (this.state.hasError) {
+			return (
+				<div style={{ color: "red", border: "1px solid red", padding: "1rem" }}>
+					<h2>Something went wrong.</h2>
+				</div>
+			);
+		}
+
+		return this.props.children;
+	}
+}
