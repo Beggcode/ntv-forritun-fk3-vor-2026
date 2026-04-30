@@ -1,16 +1,14 @@
-import { Routes, Route } from 'react-router-dom';
-import './App.css';
-import { Layout } from '@/components/Layout';
-import { IndexPage } from './pages/IndexPage';
+import "./index.css";
+import store from "./lib/store";
+
+import { Provider } from "react-redux";
+import InboxScreen from "./components/InboxScreen/InboxScreen";
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<IndexPage />} />
-      </Route>
-    </Routes>
-  );
+	return (
+		<Provider store={store}>
+			<InboxScreen />
+		</Provider>
+	);
 }
-
 export default App;
