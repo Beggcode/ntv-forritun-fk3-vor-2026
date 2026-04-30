@@ -1,4 +1,4 @@
-import type { AppDispatch, RootState } from "../../lib/store";
+import type { RootState, AppDispatch } from "../../lib/store";
 
 import { useEffect } from "react";
 
