@@ -9,6 +9,9 @@ jobs:
   chromatic:
     name: "Run Chromatic"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lesson14
     # Job steps
     steps:
       - uses: actions/checkout@v4
@@ -22,3 +25,4 @@ jobs:
           #👇 Chromatic projectToken, see https://storybook.js.org/tutorials/intro-to-storybook/react/en/deploy/ to obtain it
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          workingDir: lesson14
