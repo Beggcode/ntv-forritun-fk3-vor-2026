@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@storybook/addon-a11y": "^10.3.6"
+  }
+}
