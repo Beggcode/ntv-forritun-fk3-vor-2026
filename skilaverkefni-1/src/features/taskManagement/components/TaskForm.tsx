@@ -1,74 +1,91 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
 	TextField,
 	Select,
 	MenuItem,
 	FormControl,
 	InputLabel,
+	Button,
+	Stack,
+	FormHelperText,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { FormContainer, FormRow, SubmitButton } from "../styles";
-import type { Task } from "../../../shared/types";
+import { useStore } from "../../../shared/store/useStore";
 
-type TaskPriority = "low" | "medium" | "high";
-type TaskFormData = Omit<Task, "id" | "createdAt">;
+const taskFormSchema = z.object({
+	projectId: z.string().min(1, "Project is required"),
+	title: z.string().min(3, "Title must be at least 3 characters"),
+	description: z.string().optional(),
+	status: z.enum(["todo", "in-progress", "done"]),
+	priority: z.enum(["low", "medium", "high"]),
+});
+
+export type TaskFormData = z.infer<typeof taskFormSchema>;
 
 interface TaskFormProps {
-	projectId: string;
-	onSubmit: (task: TaskFormData) => void;
+	defaultProjectId?: string;
+	onSubmit: (data: TaskFormData) => void;
+	onCancel: () => void;
 }
 
-export const TaskForm = ({ projectId, onSubmit }: TaskFormProps) => {
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const [priority, setPriority] = useState<TaskPriority>("medium");
+export const TaskForm = ({
+	defaultProjectId,
+	onSubmit,
+	onCancel,
+}: TaskFormProps) => {
+	const { projects } = useStore();
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!title.trim()) return;
-
-		onSubmit({
-			projectId,
-			title,
-			description,
-			priority,
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<TaskFormData>({
+		resolver: zodResolver(taskFormSchema),
+		defaultValues: {
+			projectId: defaultProjectId ?? "",
 			status: "todo",
-		});
-
-		setTitle("");
-		setDescription("");
-		setPriority("medium");
-	};
+			priority: "medium",
+		},
+	});
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<FormContainer>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<Stack spacing={3} sx={{ mt: 1 }}>
 				<TextField
-					label="Task title..."
-					variant="outlined"
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-					required
 					fullWidth
+					label="Title *"
+					{...register("title")}
+					error={!!errors.title}
+					helperText={errors.title?.message}
 				/>
 
-				<TextField
-					label="Description (optional)..."
-					variant="outlined"
-					value={description}
-					onChange={(e) => setDescription(e.target.value)}
-					multiline
-					rows={3}
-					fullWidth
-				/>
+				<FormControl fullWidth error={!!errors.projectId}>
+					<InputLabel>Project *</InputLabel>
+					<Select
+						label="Project *"
+						defaultValue={defaultProjectId ?? ""}
+						{...register("projectId")}
+					>
+						{projects.map((p) => (
+							<MenuItem key={p.id} value={p.id}>
+								{p.name}
+							</MenuItem>
+						))}
+					</Select>
+					{errors.projectId && (
+						<FormHelperText>{errors.projectId.message}</FormHelperText>
+					)}
+				</FormControl>
 
-				<FormRow>
+				<Stack direction="row" spacing={2}>
 					<FormControl fullWidth>
 						<InputLabel>Priority</InputLabel>
 						<Select
-							value={priority}
-							onChange={(e) => setPriority(e.target.value as TaskPriority)}
 							label="Priority"
+							defaultValue="medium"
+							{...register("priority")}
 						>
 							<MenuItem value="low">Low</MenuItem>
 							<MenuItem value="medium">Medium</MenuItem>
@@ -76,15 +93,35 @@ export const TaskForm = ({ projectId, onSubmit }: TaskFormProps) => {
 						</Select>
 					</FormControl>
 
-					<SubmitButton
-						type="submit"
-						variant="contained"
-						startIcon={<AddIcon />}
-					>
+					<FormControl fullWidth>
+						<InputLabel>Status</InputLabel>
+						<Select
+							label="Status"
+							defaultValue="todo"
+							{...register("status")}
+						>
+							<MenuItem value="todo">Todo</MenuItem>
+							<MenuItem value="in-progress">In Progress</MenuItem>
+							<MenuItem value="done">Done</MenuItem>
+						</Select>
+					</FormControl>
+				</Stack>
+
+				<TextField
+					fullWidth
+					label="Description"
+					multiline
+					rows={3}
+					{...register("description")}
+				/>
+
+				<Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
+					<Button onClick={onCancel}>Cancel</Button>
+					<Button type="submit" variant="contained" startIcon={<AddIcon />}>
 						Add Task
-					</SubmitButton>
-				</FormRow>
-			</FormContainer>
+					</Button>
+				</Stack>
+			</Stack>
 		</form>
 	);
 };

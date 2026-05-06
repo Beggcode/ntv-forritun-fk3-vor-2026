@@ -1,22 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { Task, Project } from "../types";
 
-export interface Task {
-	id: string;
-	title: string;
-	description?: string;
-	status: "todo" | "in-progress" | "done";
-	priority: "low" | "medium" | "high";
-	projectId: string;
-	createdAt: string;
-}
-
-export interface Project {
-	id: string;
-	name: string;
-	description: string;
-	createdAt: string;
-}
+export type { Task, Project };
 
 interface AppState {
 	projects: Project[];

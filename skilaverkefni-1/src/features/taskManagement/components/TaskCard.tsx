@@ -9,6 +9,7 @@ import {
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import type { Task } from "../../../shared/store/useStore";
+import { useStore } from "../../../shared/store/useStore";
 import {
 	StyledCard,
 	TaskContent,
@@ -20,16 +21,11 @@ import {
 interface TaskCardProps {
 	task: Task;
 	projectName?: string;
-	onDelete: (id: string) => void;
-	onStatusChange: (id: string, status: Task["status"]) => void;
 }
 
-export const TaskCard = ({
-	task,
-	projectName,
-	onDelete,
-	onStatusChange,
-}: TaskCardProps) => {
+export const TaskCard = ({ task, projectName }: TaskCardProps) => {
+	const { deleteTask, updateTask } = useStore();
+
 	return (
 		<StyledCard>
 			<TaskContent>
@@ -62,7 +58,7 @@ export const TaskCard = ({
 				<Select
 					value={task.status}
 					onChange={(e) =>
-						onStatusChange(task.id, e.target.value as Task["status"])
+						updateTask(task.id, { status: e.target.value as Task["status"] })
 					}
 					size="small"
 					sx={{
@@ -78,7 +74,7 @@ export const TaskCard = ({
 				</Select>
 
 				<IconButton
-					onClick={() => onDelete(task.id)}
+					onClick={() => deleteTask(task.id)}
 					color="error"
 					size="small"
 					sx={{

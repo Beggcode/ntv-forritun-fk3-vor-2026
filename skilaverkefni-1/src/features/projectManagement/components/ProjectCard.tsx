@@ -2,7 +2,9 @@ import { Typography, IconButton, Divider } from "@mui/material";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
 import type { Project } from "../../../shared/types";
+import { useStore } from "../../../shared/store/useStore";
 import {
 	StyledProjectCard,
 	ProjectHeader,
@@ -15,16 +17,12 @@ import {
 interface ProjectCardProps {
 	project: Project;
 	taskCount: number;
-	onViewTasks: (id: string) => void;
-	onDelete: (id: string) => void;
 }
 
-export const ProjectCard = ({
-	project,
-	taskCount,
-	onViewTasks,
-	onDelete,
-}: ProjectCardProps) => {
+export const ProjectCard = ({ project, taskCount }: ProjectCardProps) => {
+	const { deleteProject } = useStore();
+	const navigate = useNavigate();
+
 	return (
 		<StyledProjectCard elevation={0}>
 			<ProjectContent>
@@ -50,12 +48,12 @@ export const ProjectCard = ({
 				<ViewButton
 					variant="outlined"
 					endIcon={<ArrowForwardIcon />}
-					onClick={() => onViewTasks(project.id)}
+					onClick={() => navigate(`/tasks?projectId=${project.id}`)}
 				>
 					View Project
 				</ViewButton>
 				<IconButton
-					onClick={() => onDelete(project.id)}
+					onClick={() => deleteProject(project.id)}
 					color="error"
 					size="small"
 				>
