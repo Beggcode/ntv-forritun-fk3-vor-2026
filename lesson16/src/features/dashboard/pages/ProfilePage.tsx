@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import { DashboardContext } from "@/features/dashboard/components/DashboardLayout";
+import type { DashboardContext } from "@/features/dashboard/components/DashboardLayout";
 
 export function ProfilePage() {
 	const { isLoggedIn } = useOutletContext<DashboardContext>();
