@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { isLoggedIn, logout } from "@/features/auth/auth";
 
 function navClassName({ isActive }: { isActive: boolean }) {
 	return [
@@ -10,6 +11,14 @@ function navClassName({ isActive }: { isActive: boolean }) {
 }
 
 export function Layout() {
+	const navigate = useNavigate();
+	const loggedIn = isLoggedIn();
+
+	function handleLogout() {
+		logout();
+		navigate("/login");
+	}
+
 	return (
 		<div className="bg-background min-h-screen">
 			<header className="border-border bg-card/50 border-b backdrop-blur-sm">
@@ -27,9 +36,18 @@ export function Layout() {
 						<NavLink to="/dashboard" className={navClassName}>
 							Dashboard
 						</NavLink>
-						<NavLink to="/login" className={navClassName}>
-							Login
-						</NavLink>
+						{loggedIn ? (
+							<button
+								onClick={handleLogout}
+								className="rounded-md px-3 py-2 text-sm font-medium transition-colors text-muted-foreground hover:bg-muted hover:text-foreground"
+							>
+								Log out
+							</button>
+						) : (
+							<NavLink to="/login" className={navClassName}>
+								Login
+							</NavLink>
+						)}
 					</nav>
 				</div>
 			</header>

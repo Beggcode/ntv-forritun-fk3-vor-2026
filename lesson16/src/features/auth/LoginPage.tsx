@@ -1,12 +1,14 @@
 import { login } from "@/features/auth/auth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function LoginPage() {
 	const navigate = useNavigate();
+	const location = useLocation();
+	const from = (location.state as { from?: Location })?.from?.pathname ?? "/dashboard";
 
 	function handleLogin() {
 		login();
-		navigate("/dashboard");
+		navigate(from, { replace: true });
 	}
 
 	return (
