@@ -1,6 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
 import { isLoggedIn } from "@/features/auth/auth";
 
+export type DashboardContext = { isLoggedIn: boolean };
+
 export default function DashboardLayout() {
 	return (
 		<div style={{ display: "flex", height: "100vh" }}>
