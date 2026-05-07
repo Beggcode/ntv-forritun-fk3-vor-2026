@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
+import { isLoggedIn } from "@/features/auth/auth";
 
 export default function DashboardLayout() {
 	return (
@@ -30,7 +31,7 @@ export default function DashboardLayout() {
 					<h2>My App</h2>
 					<hr />
 				</header>
-				<Outlet context={{ isLoggedIn: true }} />
+				<Outlet context={{ isLoggedIn: isLoggedIn() }} />
 			</main>
 		</div>
 	);
