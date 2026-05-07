@@ -1,9 +1,11 @@
 import { Link, Outlet } from "react-router-dom";
-import { isLoggedIn } from "@/features/auth/auth";
+import { useAuth } from "@clerk/react";
 
 export type DashboardContext = { isLoggedIn: boolean };
 
 export default function DashboardLayout() {
+	const { isSignedIn } = useAuth();
+
 	return (
 		<div style={{ display: "flex", height: "100vh" }}>
 			<aside
@@ -33,7 +35,7 @@ export default function DashboardLayout() {
 					<h2>My App</h2>
 					<hr />
 				</header>
-				<Outlet context={{ isLoggedIn: isLoggedIn() }} />
+				<Outlet context={{ isLoggedIn: isSignedIn ?? false } satisfies DashboardContext} />
 			</main>
 		</div>
 	);
