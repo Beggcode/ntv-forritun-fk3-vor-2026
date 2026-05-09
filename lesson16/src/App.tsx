@@ -5,6 +5,7 @@ import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { HomePage } from "@/shared/pages/HomePage";
 import { AboutPage } from "@/shared/pages/AboutPage";
 import { LoginPage } from "@/features/auth/LoginPage";
+import { SignUpPage } from "@/features/auth/SignUpPage";
 import DashboardLayout from "@/features/dashboard/components/DashboardLayout";
 import { DashboardPage } from "@/features/dashboard/pages/DashboardPage";
 import { SettingsPage } from "@/features/dashboard/pages/SettingsPage";
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
 			{ path: "/", element: <HomePage /> },
 			{ path: "/about", element: <AboutPage /> },
 			{ path: "/login", element: <LoginPage /> },
+				{ path: "/signup", element: <SignUpPage /> },
 			{
 				path: "/dashboard",
 				element: <ProtectedRoute />,

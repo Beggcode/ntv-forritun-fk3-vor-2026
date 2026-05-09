@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
+import { Show, SignInButton, SignOutButton, SignUpButton, UserButton } from "@clerk/react";
 
 function navClassName({ isActive }: { isActive: boolean }) {
 	return [
@@ -34,6 +34,18 @@ export function Layout() {
 						</Show>
 						<Show when="signed-in">
 							<UserButton />
+							<SignOutButton>
+								<button className="cursor-pointer transition-transform hover:scale-110 flex flex-col items-center">
+									<div className="w-3 h-4 bg-black rounded-full" />
+									<div className="w-6 h-5 bg-black rounded-full -mt-1" />
+									<div className="w-9 h-5 bg-black rounded-full -mt-1 flex items-center justify-center">
+										<span className="text-white text-[7px] font-bold">Sign</span>
+									</div>
+									<div className="w-12 h-5 bg-black rounded-full -mt-1 flex items-center justify-center">
+										<span className="text-white text-[7px] font-bold">out</span>
+									</div>
+								</button>
+							</SignOutButton>
 						</Show>
 					</nav>
 				</div>
