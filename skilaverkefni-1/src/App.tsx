@@ -29,7 +29,7 @@ function App() {
 
 				<main>
 					<Routes>
-						<Route path="/" element={<DashboardPage />} />{" "}
+						<Route path="/" element={<DashboardPage />} />
 						<Route path="/projects" element={<ProjectsPage />} />
 						<Route path="/tasks" element={<TasksPage />} />
 					</Routes>

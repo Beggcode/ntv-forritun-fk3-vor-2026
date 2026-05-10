@@ -41,3 +41,5 @@ dist-ssr
 coverage/
 __snapshots__/
 test-results/
+*storybook.log
+storybook-static

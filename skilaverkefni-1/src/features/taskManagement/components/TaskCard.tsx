@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import type { Task } from "../../../shared/store/useStore";
+import type { Task } from "../../../shared/types";
 import { useStore } from "../../../shared/store/useStore";
 import {
 	StyledCard,

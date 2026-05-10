@@ -1,6 +1,5 @@
 import { Box, styled, Stack } from "@mui/material";
-import type { Theme, BoxProps } from "@mui/material";
-import type { ElementType } from "react";
+import type { Theme } from "@mui/material";
 
 export const ActionHeader = styled(Box)(({ theme }: { theme: Theme }) => ({
 	display: "flex",
@@ -12,14 +11,3 @@ export const ActionHeader = styled(Box)(({ theme }: { theme: Theme }) => ({
 export const FilterContainer = styled(Stack)(({ theme }: { theme: Theme }) => ({
 	marginBottom: theme.spacing(4),
 }));
-
-interface ModalFormWrapperProps extends BoxProps {
-	component?: ElementType;
-}
-
-export const ModalFormWrapper = styled(Box)<ModalFormWrapperProps>(
-	({ theme }) => ({
-		marginTop: theme.spacing(1),
-		paddingBottom: theme.spacing(2),
-	}),
-);
