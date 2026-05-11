@@ -43,3 +43,6 @@ __snapshots__/
 test-results/
 *storybook.log
 storybook-static
+cypress/videos
+cypress/screenshots
+cypress/downloads
