@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
 import { vi } from "vitest";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ProjectForm } from "./ProjectForm";
 
 const meta: Meta<typeof ProjectForm> = {
@@ -15,9 +15,3 @@ export default meta;
 type Story = StoryObj<typeof ProjectForm>;
 
 export const Empty: Story = {};
-
-export const WithCancelHandler: Story = {
-  args: {
-    onCancel: vi.fn(),
-  },
-};

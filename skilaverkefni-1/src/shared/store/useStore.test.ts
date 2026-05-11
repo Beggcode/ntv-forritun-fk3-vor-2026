@@ -6,7 +6,6 @@ const makeProject = (overrides: Partial<Project> = {}): Project => ({
 	id: "proj-1",
 	name: "Test Project",
 	description: "A test project",
-	createdAt: "2024-01-01",
 	...overrides,
 });
 
@@ -17,7 +16,6 @@ const makeTask = (overrides: Partial<Task> = {}): Task => ({
 	description: "",
 	status: "todo",
 	priority: "medium",
-	createdAt: "2024-01-01",
 	...overrides,
 });
 

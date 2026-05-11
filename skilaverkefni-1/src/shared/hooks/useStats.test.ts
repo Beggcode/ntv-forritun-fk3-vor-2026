@@ -10,7 +10,6 @@ const makeTask = (overrides: Partial<Task> = {}): Task => ({
   description: "",
   status: "todo",
   priority: "medium",
-  createdAt: "2024-01-01",
   ...overrides,
 });
 

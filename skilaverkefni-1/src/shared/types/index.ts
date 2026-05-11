@@ -4,7 +4,6 @@ export const ProjectSchema = z.object({
 	id: z.string(),
 	name: z.string().min(2, "Project name is too short"),
 	description: z.string().default(""),
-	createdAt: z.string(),
 });
 
 export const TaskSchema = z.object({
@@ -14,7 +13,6 @@ export const TaskSchema = z.object({
 	description: z.string().default(""),
 	status: z.enum(["todo", "in-progress", "done"]),
 	priority: z.enum(["low", "medium", "high"]),
-	createdAt: z.string(),
 });
 
 export type Project = z.infer<typeof ProjectSchema>;

@@ -26,7 +26,6 @@ export const ProjectsPage = () => {
 			id: uuidv4(),
 			name: data.name,
 			description: data.description ?? "",
-			createdAt: new Date().toISOString(),
 		});
 		setIsModalOpen(false);
 	};

@@ -45,7 +45,6 @@ export const TasksPage = () => {
 			...data,
 			description: data.description ?? "",
 			id: uuidv4(),
-			createdAt: new Date().toISOString(),
 		});
 		setIsModalOpen(false);
 	};

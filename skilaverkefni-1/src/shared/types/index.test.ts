@@ -5,7 +5,6 @@ const makeProject = (overrides = {}) => ({
   id: "proj-1",
   name: "My Project",
   description: "A description",
-  createdAt: "2024-01-01",
   ...overrides,
 });
 
@@ -16,7 +15,6 @@ const makeTask = (overrides = {}) => ({
   description: "",
   status: "todo",
   priority: "medium",
-  createdAt: "2024-01-01",
   ...overrides,
 });
 
@@ -31,15 +29,11 @@ describe("ProjectSchema", () => {
   });
 
   it("defaults description to an empty string if not provided", () => {
-    expect(ProjectSchema.parse({ id: "proj-1", name: "My Project", createdAt: "2024-01-01" }).description).toBe("");
+    expect(ProjectSchema.parse({ id: "proj-1", name: "My Project" }).description).toBe("");
   });
 
   it("requires an id", () => {
-    expect(() => ProjectSchema.parse({ name: "My Project", createdAt: "2024-01-01" })).toThrow();
-  });
-
-  it("requires a createdAt date", () => {
-    expect(() => ProjectSchema.parse({ id: "proj-1", name: "My Project" })).toThrow();
+    expect(() => ProjectSchema.parse({ name: "My Project" })).toThrow();
   });
 });
 
@@ -54,7 +48,7 @@ describe("TaskSchema", () => {
   });
 
   it("defaults description to an empty string if not provided", () => {
-    expect(TaskSchema.parse({ id: "task-1", projectId: "proj-1", title: "Fix bug", status: "todo", priority: "medium", createdAt: "2024-01-01" }).description).toBe("");
+    expect(TaskSchema.parse({ id: "task-1", projectId: "proj-1", title: "Fix bug", status: "todo", priority: "medium" }).description).toBe("");
   });
 
   it("accepts todo, in-progress, and done as status", () => {
@@ -78,6 +72,6 @@ describe("TaskSchema", () => {
   });
 
   it("requires a projectId", () => {
-    expect(() => TaskSchema.parse({ id: "task-1", title: "Fix bug", status: "todo", priority: "medium", createdAt: "2024-01-01" })).toThrow();
+    expect(() => TaskSchema.parse({ id: "task-1", title: "Fix bug", status: "todo", priority: "medium" })).toThrow();
   });
 });
