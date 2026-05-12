@@ -1,8 +1,18 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { z } from "zod";
 import type { Task, Project } from "../types";
+import { ProjectSchema, TaskSchema } from "../types";
 
 export type { Task, Project };
+
+const PersistedStateSchema = z.object({
+	state: z.object({
+		projects: z.array(ProjectSchema).catch([]),
+		tasks: z.array(TaskSchema).catch([]),
+	}),
+	version: z.number().optional(),
+});
 
 interface AppState {
 	projects: Project[];
@@ -13,6 +23,25 @@ interface AppState {
 	updateTask: (id: string, updatedTask: Partial<Task>) => void;
 	deleteTask: (id: string) => void;
 }
+
+const zodStorage = createJSONStorage<AppState>(() => ({
+	getItem: (name: string): string | null => {
+		const raw = localStorage.getItem(name);
+		if (!raw) return null;
+		try {
+			const validated = PersistedStateSchema.parse(JSON.parse(raw));
+			return JSON.stringify(validated);
+		} catch {
+			return null;
+		}
+	},
+	setItem: (name: string, value: string): void => {
+		localStorage.setItem(name, value);
+	},
+	removeItem: (name: string): void => {
+		localStorage.removeItem(name);
+	},
+}));
 
 export const useStore = create<AppState>()(
 	persist(
@@ -43,6 +72,7 @@ export const useStore = create<AppState>()(
 		}),
 		{
 			name: "team-task-hub-storage",
+			storage: zodStorage,
 		},
 	),
 );

@@ -1,35 +1,73 @@
-Task and project Management System
-A React + TypeScript task and project manager
+# Team Task Hub
 
-Technical
+A React + TypeScript app for managing projects and tasks.
+Users can create projects, add tasks for projects, filter and search for tasks, update task status
+via the dashboard. Data saved in localStorage.
 
-Framework: React 18 (Vite)
+## Stack
 
-State: Zustand + Custom LocalStorage Hook
+- React + TypeScript (Vite)
+- Zustand
+- React Hook Form + Zod
+- Material UI
+- React Router
+- Vitest + React Testing Library
+- Storybook + @storybook/addon-vitest + Playwright
+- Cypress
+- uuid (ID generator)
 
-Forms: React Hook Form + Zod validation
+## Running the app
 
-UI: Material UI v6
+### Copy and paste these lines below into terminal
 
-Routing: React Router 6
+```
+git clone -b skilaverkefni-2 https://github.com/Beggcode/ntv-forritun-fk3-vor-2026.git
 
-Setup
+cd ntv-forritun-fk3-vor-2026/skilaverkefni-1
 
 npm install
 
 npm run dev
+```
 
-npm run build
+## Testing
 
-Architecture
+### Unit and Storybook tests (Vitest)
 
-Styled Components: To maintain clean JSX, most styling is moved to separate \*.styles.ts files.
+```
+npm run test:run
+```
 
-Schema-Driven: Zod schemas are used for both runtime validation and TypeScript type inference.
+Runs all tests
 
-Centralized Store: Zustand manages the global state for projects and tasks with automatic local storage persistence.
+- Storybook component tests
+- hooks
+- store flow
+- Zod schemas
+- UI components
 
-📂 Folder Structure
-src/features/ - Feature-based modules (Task and Project management).
+### Storybook
 
-src/shared/ - Global store, Zod schemas, types, and custom hooks.
+```
+npm run storybook
+```
+
+Opens Storybook on port 6006. Stories are available for ProjectCard, ProjectForm, TaskCard, TaskFilters and TaskForm.
+
+### E2E tests (Cypress)
+
+Run tests in the terminal:
+
+```
+npm run cypress:run
+```
+
+Or open the Cypress UI to view tests in a browser:
+
+```
+npm run cypress:open
+```
+
+## CI
+
+GitHub Actions runs Vitest and Cypress automatically on push or pull requests to main and branch "skilaverkefni-2".
